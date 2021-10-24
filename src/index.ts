@@ -1,8 +1,13 @@
 import express from "express";
-import users from './routes/router';
+import bodyParser from "body-parser";
+import morgan from "morgan";
+import users from "./routes/router";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+app.use(morgan('dev'));
+app.use(bodyParser.json({ type: 'application/json' }));
 
 app.use('/', users);
 

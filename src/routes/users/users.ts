@@ -1,9 +1,12 @@
 import { Router } from "express";
+import { ValidatedRequest, createValidator } from "express-joi-validation";
 import storage from "../../services/storage";
 import UserService from "../../services/users/userService";
+import { UserRequestSchema, UserSchema } from "../../schemas/user";
 
 const router = Router();
 const userService = new UserService(storage);
+const validator = createValidator();
 
 router.get('/', (req, res) => {
     const { loginSubstring, limit } = req.query;
@@ -19,11 +22,11 @@ router.get('/:id', (req, res) => {
     res.send(userService.getUserById(id) || {});
 });
 
-router.post('/', (req, res) => {
+router.post('/', validator.body(UserSchema), (req: ValidatedRequest<UserRequestSchema>, res) => {
     res.send(userService.createUser(req.body));
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', validator.body(UserSchema), (req: ValidatedRequest<UserRequestSchema>, res) => {
     const { id } = req.params;
 
     res.send(userService.updateUserById(id, req.body));

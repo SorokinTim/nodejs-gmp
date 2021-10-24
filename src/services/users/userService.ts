@@ -1,7 +1,5 @@
 import { v4 as uuid } from "uuid";
-import User from "../../types/user";
-
-type internalProperties = 'id' | 'isDeleted';
+import { User, UserInternalProps } from "../../types/user";
 
 export default class UserService {
     constructor(protected storage: User[]) {
@@ -12,7 +10,7 @@ export default class UserService {
         return this.storage.find(user => user.id === id);
     }
 
-    createUser(user: Omit<User, internalProperties>) {
+    createUser(user: Omit<User, UserInternalProps>) {
         const { login, password, age } = user;
 
         const currentLength = this.storage.push({
@@ -26,7 +24,7 @@ export default class UserService {
         return this.storage[currentLength - 1];
     }
 
-    updateUserById(id: string, user: Partial<Omit<User, internalProperties>>) {
+    updateUserById(id: string, user: Partial<Omit<User, UserInternalProps>>) {
         const { login, password, age } = user;
 
         const currentUser = this.getUserById(id);

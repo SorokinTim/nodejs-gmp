@@ -47,7 +47,8 @@ export default class UserService {
         const filteredUsers = this.storage.filter(user => {
             return loginSubstring ? user.login.match(new RegExp(loginSubstring, 'gi')) : true;
         });
+        const sortedUsers = filteredUsers.sort((a, b) => a.login.localeCompare(b.login));
 
-        return filteredUsers.slice(0, limit);
+        return sortedUsers.slice(0, limit);
     }
 }

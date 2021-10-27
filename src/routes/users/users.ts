@@ -19,7 +19,11 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
     const { id } = req.params;
 
-    res.send(userService.getUserById(id) || {});
+    if (!userService.getUserById(id)) {
+        res.status(404).send('User with given id doesn\'t exist');
+    }
+
+    res.send(userService.getUserById(id));
 });
 
 router.post('/', validator.body(UserSchema), (req: ValidatedRequest<UserRequestSchema>, res) => {

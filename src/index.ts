@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import morgan from "morgan";
-import users from "./routes/router";
+import users from "./api/api";
 
 const app = express();
 const PORT = process.env.PORT || 3001;

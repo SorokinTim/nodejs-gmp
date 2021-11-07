@@ -1,54 +1,76 @@
 import { v4 as uuid } from "uuid";
+import { Op, literal } from "sequelize";
+import sequelize from "../../data-acess/db";
+import { User as UserModel } from "../../models/User";
 import { User, UserInternalProps } from "../../types/user";
 
 export default class UserService {
-    constructor(protected storage: User[]) {
-        this.storage = storage;
+    async getUserById(id: string) {
+        await sequelize.sync();
+
+        return await UserModel.findByPk(id)
     }
 
-    getUserById(id: string) {
-        return this.storage.find(user => user.id === id);
-    }
-
-    createUser(user: Omit<User, UserInternalProps>) {
+    async createUser(user: Omit<User, UserInternalProps>) {
         const { login, password, age } = user;
+        await sequelize.sync();
 
-        const currentLength = this.storage.push({
+        return await UserModel.create({
             login,
             password,
             age,
             id: uuid(),
             isDeleted: false,
         });
-
-        return this.storage[currentLength - 1];
     }
 
-    updateUserById(id: string, user: Partial<Omit<User, UserInternalProps>>) {
+    async updateUserById(id: string, user: Partial<Omit<User, UserInternalProps>>) {
         const { login, password, age } = user;
+        await sequelize.sync();
 
-        const currentUser = this.getUserById(id);
-        const updatedUser = { ...currentUser, login, password, age };
+        const currentUser = await this.getUserById(id);
 
-        return Object.assign(currentUser, updatedUser);
+        if (!currentUser) {
+            return;
+        }
+
+        await currentUser.update({
+            login,
+            password,
+            age,
+        });
+        await currentUser.save();
+
+        return currentUser;
     }
 
-    deleteUserById(id: string) {
-        const deletedUser = this.getUserById(id);
+    async deleteUserById(id: string) {
+        await sequelize.sync();
+        const deletedUser = await this.getUserById(id);
 
-        if (deletedUser) {
-            deletedUser.isDeleted = true;
+        if (!deletedUser) {
+            return;
         }
+
+        await deletedUser.update({
+            isDeleted: true,
+        });
+        await deletedUser.save();
 
         return deletedUser;
     }
 
-    getAutoSuggestUsers(loginSubstring?: string, limit: number = this.storage.length) {
-        const filteredUsers = this.storage.filter(user => {
-            return loginSubstring ? user.login.match(new RegExp(loginSubstring, 'gi')) : true;
-        });
-        const sortedUsers = filteredUsers.sort((a, b) => a.login.localeCompare(b.login));
+    async getAutoSuggestUsers(loginSubstring?: string, limit?: number) {
+        await sequelize.sync();
 
-        return sortedUsers.slice(0, limit);
+        return await UserModel.findAll({
+            where: {
+                login: {
+                    [Op.like]: `%${loginSubstring || '_'}%`,
+                }
+            },
+            limit,
+            order: literal('login ASC'),
+        });
     }
 }

@@ -38,7 +38,6 @@ export default class UserService {
             password,
             age,
         });
-        await currentUser.save();
 
         return currentUser;
     }

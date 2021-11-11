@@ -20,7 +20,6 @@ export default class UserService {
             password,
             age,
             id: uuid(),
-            isDeleted: false,
         });
     }
 
@@ -52,10 +51,9 @@ export default class UserService {
             return;
         }
 
-        await deletedUser.update({
-            isDeleted: true,
+        await UserModel.destroy({
+            where: { id },
         });
-        await deletedUser.save();
 
         return deletedUser;
     }

@@ -3,7 +3,6 @@ export interface User {
     login: string;
     password: string;
     age: number;
-    isDeleted: boolean;
 }
 
-export type UserInternalProps = 'id' | 'isDeleted';
+export type UserInternalProps = 'id';

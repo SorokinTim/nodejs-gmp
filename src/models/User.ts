@@ -8,10 +8,6 @@ User.init({
         primaryKey: true,
         allowNull: false,
     },
-    isDeleted: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-    },
     login: {
         type: DataTypes.STRING(255),
         allowNull: false,

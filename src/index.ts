@@ -1,6 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import morgan from "morgan";
+import sequelize from "./data-acess/db";
 import users from "./api/api";
 
 const app = express();
@@ -15,4 +16,6 @@ app.all('*', (req, res) => {
     res.send('Error, data not found!');
 });
 
-app.listen(PORT, () => console.log(`Server running at ${PORT}`));
+sequelize.sync().then(() => {
+    app.listen(PORT, () => console.log(`Server running at ${PORT}`));
+});

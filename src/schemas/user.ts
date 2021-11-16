@@ -3,7 +3,7 @@ import { ValidatedRequestSchema, ContainerTypes } from "express-joi-validation";
 import { User, UserInternalProps } from "../types/user";
 
 export interface UserRequestSchema extends ValidatedRequestSchema {
-    [ContainerTypes.Query]: Omit<User, UserInternalProps>
+    [ContainerTypes.Body]: Omit<User, UserInternalProps>
 }
 
 export const UserSchema = Joi.object({

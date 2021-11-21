@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS groups(
+CREATE TABLE IF NOT EXISTS groups (
     "id" UUID NOT NULL,
     "name" VARCHAR(255) NOT NULL,
     "permissions" VARCHAR(50) ARRAY NOT NULL,

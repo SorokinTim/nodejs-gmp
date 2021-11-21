@@ -1,5 +1,6 @@
 import { v4 as uuid } from "uuid";
 import { Group as GroupModel } from "../../models/Group";
+import { UserGroup } from "../../models/UserGroup";
 import { Group, GroupInternalProps } from "../../types/group";
 
 export default class GroupService {
@@ -47,5 +48,16 @@ export default class GroupService {
         });
 
         return deletedGroup;
+    }
+
+    async addUsersToGroup(groupId: string, userIds: string[]) {
+        try {
+            return await UserGroup.bulkCreate(userIds.map(userId => ({
+                userId,
+                groupId,
+            })));
+        } catch (err) {
+            return null;
+        }
     }
 }

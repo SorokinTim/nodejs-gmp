@@ -16,6 +16,10 @@ export const winstonLoggerMiddleware = winston.createLogger({
             ),
             handleExceptions: true,
         }),
+        new winston.transports.Console({
+            level: 'warn',
+            format: winston.format.json(),
+        }),
     ],
     rejectionHandlers: [
         new winston.transports.File({

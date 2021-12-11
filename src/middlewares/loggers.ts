@@ -16,13 +16,30 @@ export const winstonLoggerMiddleware = winston.createLogger({
                     return `[${[info.timestamp]}] ${info.method}: ${info.message}; Arguments: ${JSON.stringify(info.arguments)}`;
                 }),
             ),
-            handleExceptions: true,
+        }),
+    ],
+    exceptionHandlers: [
+        new winston.transports.Console({
+            format: winston.format.combine(
+                winston.format.timestamp({ format: 'HH:mm:ss' }),
+                winston.format.printf(info => {
+                    return `[${[info.timestamp]}] ${info.message}`;
+                }),
+            ),
         }),
     ],
     rejectionHandlers: [
         new winston.transports.File({
             filename: 'logs/errors.log',
             format: winston.format.json(),
+        }),
+        new winston.transports.Console({
+            format: winston.format.combine(
+                winston.format.timestamp({ format: 'HH:mm:ss' }),
+                winston.format.printf(info => {
+                    return `[${[info.timestamp]}] ${info.message}`;
+                }),
+            ),
         }),
     ],
 } as LoggerOptions);

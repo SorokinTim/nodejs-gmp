@@ -2,7 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import sequelize from "./data-acess/db";
 import api from "./api/api";
-import { loggerMiddleware, winstonLoggerMiddleware } from "./middlewares/loggers";
+import { loggerMiddleware } from "./middlewares/loggers";
 import { unhandledErrorsMiddleware } from "./middlewares/errorHandler";
 import ApiError from "./errors/ApiError";
 
@@ -20,8 +20,11 @@ app.all('*', (req, res, next) => {
 
 app.use(unhandledErrorsMiddleware);
 
-process.on('uncaughtException', reason => {
-    winstonLoggerMiddleware.error(reason.message);
+process.on('uncaughtException', () => {
+    process.exit(1);
+});
+
+process.on('unhandledRejection', () => {
     process.exit(1);
 });
 

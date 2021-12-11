@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { ValidatedRequest, createValidator } from "express-joi-validation";
 import { GroupRequestSchema, GroupSchema } from "../../schemas/group";
-import { unknownErrorLoggerMiddleware } from "../../middlewares/errorHandler";
 import GroupService from "../../services/groups/groupService";
 import ApiError from "../../errors/ApiError";
 
@@ -20,7 +19,7 @@ router.get('/', async (req, res, next) => {
 
         res.send(groups);
     } catch (error: any) {
-        unknownErrorLoggerMiddleware(error, req, res, next);
+        next(error);
     }
 });
 
@@ -36,7 +35,7 @@ router.get('/:id', async (req, res, next) => {
 
         res.send(group);
     } catch (error: any) {
-        unknownErrorLoggerMiddleware(error, req, res, next);
+        next(error);
     }
 });
 
@@ -44,7 +43,7 @@ router.post('/', validator.body(GroupSchema), async (req: ValidatedRequest<Group
     try {
         res.send(await service.createGroup(req.body));
     } catch (error: any) {
-        unknownErrorLoggerMiddleware(error, req, res, next);
+        next(error);
     }
 });
 
@@ -61,7 +60,7 @@ router.put('/:id', validator.body(GroupSchema), async (req: ValidatedRequest<Gro
 
         res.send(updatedGroup);
     } catch (error: any) {
-        unknownErrorLoggerMiddleware(error, req, res, next);
+        next(error);
     }
 });
 
@@ -77,7 +76,7 @@ router.delete('/:id', async (req, res, next) => {
 
         res.send(deletedGroup);
     } catch (error: any) {
-        unknownErrorLoggerMiddleware(error, req, res, next);
+        next(error);
     }
 });
 

@@ -12,13 +12,11 @@ export const winstonLoggerMiddleware = winston.createLogger({
             level: 'error',
             format: winston.format.combine(
                 winston.format.timestamp({ format: 'HH:mm:ss' }),
-                winston.format.printf(info => `[${[info.timestamp]}] ${info.level}: ${info.message}`),
+                winston.format.printf(info => {
+                    return `[${[info.timestamp]}] ${info.method}: ${info.message}; Arguments: ${JSON.stringify(info.arguments)}`;
+                }),
             ),
             handleExceptions: true,
-        }),
-        new winston.transports.Console({
-            level: 'warn',
-            format: winston.format.json(),
         }),
     ],
     rejectionHandlers: [

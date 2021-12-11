@@ -2,7 +2,6 @@ import { Router } from "express";
 import { ValidatedRequest, createValidator } from "express-joi-validation";
 import UserService from "../../services/users/userService";
 import { UserRequestSchema, UserSchema } from "../../schemas/user";
-import { unknownErrorLoggerMiddleware } from "../../middlewares/errorHandler";
 import ApiError from "../../errors/ApiError";
 
 const router = Router();
@@ -23,7 +22,7 @@ router.get('/', async (req, res, next) => {
 
         res.send(suggestedUsers);
     } catch (error: any) {
-        unknownErrorLoggerMiddleware(error, req, res, next);
+        next(error);
     }
 });
 
@@ -39,7 +38,7 @@ router.get('/:id', async (req, res, next) => {
 
         res.send(user);
     } catch (error: any) {
-        unknownErrorLoggerMiddleware(error, req, res, next);
+        next(error);
     }
 });
 
@@ -47,7 +46,7 @@ router.post('/', validator.body(UserSchema), async (req: ValidatedRequest<UserRe
     try {
         res.send(await service.createUser(req.body));
     } catch (error: any) {
-        unknownErrorLoggerMiddleware(error, req, res, next);
+        next(error);
     }
 });
 
@@ -64,7 +63,7 @@ router.put('/:id', validator.body(UserSchema), async (req: ValidatedRequest<User
 
         res.send(updatedUser);
     } catch (error: any) {
-        unknownErrorLoggerMiddleware(error, req, res, next);
+        next(error);
     }
 });
 
@@ -80,7 +79,7 @@ router.delete('/:id', async (req, res, next) => {
 
         res.send(deletedUser);
     } catch (error: any) {
-        unknownErrorLoggerMiddleware(error, req, res, next);
+        next(error);
     }
 });
 

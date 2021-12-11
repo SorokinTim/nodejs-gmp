@@ -2,7 +2,6 @@ import { Router } from "express";
 import { createValidator, ValidatedRequest } from "express-joi-validation";
 import GroupService from "../../../services/groups/groupService";
 import { UserGroupSchema, UserGroupRequestSchema } from "../../../schemas/userGroup";
-import { unknownErrorLoggerMiddleware } from "../../../middlewares/errorHandler";
 import ApiError from "../../../errors/ApiError";
 
 const router = Router();
@@ -23,7 +22,7 @@ router.post('/:id', validator.body(UserGroupSchema), async (req: ValidatedReques
 
         res.send(group);
     } catch (error: any) {
-        unknownErrorLoggerMiddleware(error, req, res, next)
+        next(error);
     }
 })
 

@@ -1,19 +1,31 @@
 import express from "express";
 import bodyParser from "body-parser";
-import morgan from "morgan";
 import sequelize from "./data-acess/db";
 import api from "./api/api";
+import { loggerMiddleware } from "./middlewares/loggers";
+import { unhandledErrorsMiddleware } from "./middlewares/errorHandler";
+import ApiError from "./errors/ApiError";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(morgan('dev'));
 app.use(bodyParser.json({ type: 'application/json' }));
+app.use(loggerMiddleware);
 
 app.use('/', api);
 
-app.all('*', (req, res) => {
-    res.send('Error, data not found!');
+app.all('*', (req, res, next) => {
+    next(ApiError.dataNotFound());
+});
+
+app.use(unhandledErrorsMiddleware);
+
+process.on('uncaughtException', () => {
+    process.exit(1);
+});
+
+process.on('unhandledRejection', () => {
+    process.exit(1);
 });
 
 sequelize.sync().then(() => {

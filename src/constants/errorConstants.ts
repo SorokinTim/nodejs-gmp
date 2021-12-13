@@ -1,6 +1,6 @@
-export const USER_DOES_NOT_EXIST = 'User with given id doesn\'t exist';
-export const GROUP_DOES_NOT_EXIST = 'Group with given id doesn\'t exist';
-
 export const DATA_IS_NOT_ANY_MATCH = 'There is not any match in the database';
+export const ERROR_DATA_NOT_FOUND = 'Error, data not found!';
 
-export const SOMETHING_WENT_WRONG = 'Something went wrong';
+export const INTERNAL_SERVER_ERROR = 'Internal Server Error';
+
+export const UNKNOWN_ERROR = 'Unknown Error!';

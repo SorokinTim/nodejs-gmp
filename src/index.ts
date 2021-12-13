@@ -1,5 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
+import cors from "cors";
 import sequelize from "./data-acess/db";
 import api from "./api/api";
 import { loggerMiddleware } from "./middlewares/loggers";
@@ -9,6 +10,7 @@ import ApiError from "./errors/ApiError";
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+app.use(cors());
 app.use(bodyParser.json({ type: 'application/json' }));
 app.use(loggerMiddleware);
 

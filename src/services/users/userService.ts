@@ -1,11 +1,20 @@
 import { v4 as uuid } from "uuid";
 import { Op, literal } from "sequelize";
+import jwt from "jsonwebtoken";
 import { User as UserModel } from "../../models/User";
 import { User, UserInternalProps } from "../../types/user";
+import ApiError from "../../errors/ApiError";
+import { JWT_MAX_AGE, JWT_SECRET_KEY } from "../../data-acess/secret";
 
 export default class UserService {
     async getUserById(id: string) {
         return await UserModel.findByPk(id)
+    }
+
+    async getUserByLogin(login: string) {
+        return await UserModel.findOne({
+            where: { login },
+        }) as User | null;
     }
 
     async createUser(user: Omit<User, UserInternalProps>) {
@@ -61,5 +70,15 @@ export default class UserService {
             limit,
             order: literal('login ASC'),
         });
+    }
+
+    async authorizeUser(login: string, password: string) {
+        const user = await this.getUserByLogin(login);
+
+        if (!user || user.password !== password) {
+            throw ApiError.wrongAuthorizationCredentials();
+        }
+
+        return jwt.sign({ login }, JWT_SECRET_KEY, { expiresIn: JWT_MAX_AGE });
     }
 }

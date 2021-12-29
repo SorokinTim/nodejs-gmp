@@ -1,7 +1,6 @@
 import { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
 import ApiError from "../errors/ApiError";
-import { JWT_MAX_AGE, JWT_SECRET_KEY } from "../data-acess/secret";
 
 export const authorizationMiddleware: RequestHandler = (req, res, next) => {
     try {
@@ -13,7 +12,12 @@ export const authorizationMiddleware: RequestHandler = (req, res, next) => {
             return;
         }
 
-        jwt.verify(authorization, JWT_SECRET_KEY, { maxAge: JWT_MAX_AGE });
+        if (!process.env.JWT_SECRET_KEY) {
+            next(ApiError.internalServerError());
+            return;
+        }
+
+        jwt.verify(authorization, process.env.JWT_SECRET_KEY, { maxAge: process.env.JWT_MAX_AGE || '1d' });
 
         next();
     } catch (error) {

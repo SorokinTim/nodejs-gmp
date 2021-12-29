@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 import { User as UserModel } from "../../models/User";
 import { User, UserInternalProps } from "../../types/user";
 import ApiError from "../../errors/ApiError";
-import { JWT_MAX_AGE, JWT_SECRET_KEY } from "../../data-acess/secret";
 
 export default class UserService {
     async getUserById(id: string) {
@@ -79,6 +78,10 @@ export default class UserService {
             throw ApiError.wrongAuthorizationCredentials();
         }
 
-        return jwt.sign({ login }, JWT_SECRET_KEY, { expiresIn: JWT_MAX_AGE });
+        if (!process.env.JWT_SECRET_KEY) {
+            throw ApiError.internalServerError();
+        }
+
+        return jwt.sign({ login }, process.env.JWT_SECRET_KEY, { expiresIn: process.env.JWT_MAX_AGE || '1d' });
     }
 }
